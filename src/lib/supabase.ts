@@ -126,24 +126,38 @@ export async function signUpWithEmail(email: string, password: string) {
     email,
     password,
     options: {
-      emailRedirectTo: redirectTo,
-      // This ensures the email is sent
-      data: {
-        email_confirm: true
-      }
+      emailRedirectTo: `${redirectTo}/auth/callback`,
+      // Don't add custom data here - it can interfere
     }
   });
   
   if (error) {
-    console.error('Signup error:', error);
+    console.error('❌ Signup error:', error);
     throw error;
   }
   
-  // Log success for debugging
+  // Check if user was created successfully
+  if (!data.user) {
+    throw new Error('Failed to create user account');
+  }
+  
+  // Log detailed information for debugging
   console.log('✅ Signup successful:', {
-    user: data.user?.email,
-    needsConfirmation: !data.user?.email_confirmed_at
+    user: data.user.email,
+    userId: data.user.id,
+    emailConfirmed: data.user.email_confirmed_at ? 'Yes' : 'No',
+    needsConfirmation: !data.user.email_confirmed_at,
+    session: data.session ? 'Created' : 'Pending confirmation'
   });
+  
+  // Check if email confirmation is required
+  if (!data.user.email_confirmed_at && !data.session) {
+    console.log('📧 Confirmation email should be sent to:', email);
+    console.log('⚠️ If you don\'t receive it, check:');
+    console.log('   1. Supabase email templates');
+    console.log('   2. Spam folder');
+    console.log('   3. Supabase email provider settings');
+  }
   
   return data;
 }
