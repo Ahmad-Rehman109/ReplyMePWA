@@ -7,7 +7,7 @@ export const supabase = createClient(
 );
 
 export interface UserProfile {
-  id: string;
+  id: string; 
   email: string;
   name: string;
   age: number;
