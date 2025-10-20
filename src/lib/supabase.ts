@@ -18,8 +18,10 @@ export interface UserProfile {
 
 // Auth functions
 export async function signInWithMagicLink(email: string) {
-  // Get the correct redirect URL (works in both dev and production)
-  const redirectTo = window.location.href.split('?')[0].split('#')[0];
+  // In production, use env variable. In dev, use current origin
+  const redirectTo = import.meta.env.VITE_APP_URL || window.location.origin;
+  
+  console.log('Redirect URL:', redirectTo); // Debug log
   
   const { error } = await supabase.auth.signInWithOtp({
     email,
