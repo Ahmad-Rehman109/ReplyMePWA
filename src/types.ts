@@ -1,5 +1,5 @@
 export type ToneType = 'funny' | 'bold' | 'mature' | 'savage' | 'flirty' | 'sarcastic' | 'professional' | 'casual' | 'witty' | 'unhinged' | 'mysterious' | 'mixed';
-
+export type GenerationMode = 'standard' | 'unfiltered';
 export interface Reply {
   text: string;
   explanation: string;
