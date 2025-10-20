@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { Sparkles, TrendingUp, Infinity } from 'lucide-react';
 import type { Generation } from '../../types';
+import { toneColors } from '../../constants/toneColors';
 
 interface HomeViewProps {
   totalGenerations: number;
@@ -17,7 +18,6 @@ export function HomeView({
   onHistoryItemClick,
   isSignedIn
 }: HomeViewProps) {
-  import { toneColors } from '../../constants/toneColors';
 
   return (
     <div className="pb-24 px-6 pt-6">
