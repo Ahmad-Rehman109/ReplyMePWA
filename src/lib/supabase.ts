@@ -16,37 +16,35 @@ export interface UserProfile {
   updated_at: string;
 }
 
-// Auth functions
-export async function signInWithMagicLink(email: string) {
-  // Multiple fallbacks
-  const redirectTo = 
-    import.meta.env.VITE_APP_URL || 
-    (typeof window !== 'undefined' ? window.location.origin : '') ||
-    'https://replyme-ecru.vercel.app';
-  
-  console.log('🔗 Redirect URL:', redirectTo);
-  console.log('🌍 Environment:', import.meta.env.MODE);
-  console.log('📦 VITE_APP_URL:', import.meta.env.VITE_APP_URL);
-  
+export async function signInWithOTP(email: string) {
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: redirectTo,
+      shouldCreateUser: true,
     }
   });
   
   if (error) {
-    console.error('Magic link error:', error);
+    console.error('OTP send error:', error);
     throw error;
   }
 }
-export async function signOut() {
-  const { error } = await supabase.auth.signOut();
+
+export async function verifyOTP(email: string, token: string) {
+  const { data, error } = await supabase.auth.verifyOtp({
+    email,
+    token,
+    type: 'email'
+  });
+  
   if (error) {
-    console.error('Sign out error:', error);
+    console.error('OTP verification error:', error);
     throw error;
   }
+  
+  return data;
 }
+
 
 export async function getCurrentUser() {
   const { data: { user }, error } = await supabase.auth.getUser();
