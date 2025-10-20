@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Loader2, ChevronDown } from 'lucide-react';
-import type { ToneType } from '../../types';
-
+import type { ToneType, GenerationMode } from '../../types';
 interface GenerateModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -14,6 +13,7 @@ export function GenerateModal({ isOpen, onClose, onGenerate, isLoading }: Genera
   const [input, setInput] = useState('');
   const [selectedTone, setSelectedTone] = useState<ToneType>('savage');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [mode, setMode] = useState<GenerationMode>('standard');
 
   const tones = [
     { id: 'savage' as ToneType, emoji: '🔥', label: 'Savage', color: '#FF6B6B', desc: 'Brutally honest & devastating' },
@@ -34,7 +34,7 @@ export function GenerateModal({ isOpen, onClose, onGenerate, isLoading }: Genera
 
   const handleSubmit = async () => {
     if (!input.trim() || isLoading) return;
-    await onGenerate(input.trim(), selectedTone);
+    await onGenerate(input.trim(), selectedTone, mode);
     setInput('');
   };
 
@@ -100,7 +100,39 @@ export function GenerateModal({ isOpen, onClose, onGenerate, isLoading }: Genera
                 }}
               />
             </div>
-
+            {/* Unfiltered Mode Toggle */}
+      <div className="mb-4 p-3 rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.05)' }}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-sm" style={{ color: '#e6eef8' }}>
+              ⚡ Unfiltered Mode
+            </span>
+            {mode === 'unfiltered' && (
+              <span className="text-xs px-2 py-0.5 rounded" style={{ background: '#FF5C5C', color: '#fff' }}>
+                BOLD
+              </span>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={() => setMode(mode === 'standard' ? 'unfiltered' : 'standard')}
+            className="relative w-12 h-7 rounded-full transition-colors"
+            style={{
+              background: mode === 'unfiltered' ? '#7C5CFF' : 'rgba(255, 255, 255, 0.2)'
+            }}
+          >
+            <div
+              className="absolute top-1 w-5 h-5 rounded-full bg-white transition-all"
+              style={{ left: mode === 'unfiltered' ? '24px' : '4px' }}
+            />
+          </button>
+        </div>
+        {mode === 'unfiltered' && (
+          <p className="text-xs mt-2" style={{ color: '#9aa4b2' }}>
+            Max creativity & edge. No holding back. 🔥
+          </p>
+        )}
+      </div>
             {/* Tone Dropdown */}
             <div className="mb-6 relative">
               <label className="block mb-2 text-sm" style={{ color: '#9aa4b2' }}>
