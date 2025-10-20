@@ -116,10 +116,21 @@ export function HistoryView({
             border: '1px dashed rgba(255, 255, 255, 0.2)'
           }}
         >
-          <p style={{ color: '#9aa4b2' }}>
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center"
+            style={{ background: 'rgba(124, 92, 255, 0.2)' }}>
+            <span className="text-3xl">
+              {searchQuery || filter === 'favorites' ? '🔍' : '✨'}
+            </span>
+          </div>
+          <h3 className="mb-2" style={{ color: '#e6eef8' }}>
             {searchQuery || filter === 'favorites' 
               ? 'No results found' 
-              : 'No history yet. Start generating replies!'}
+              : 'No history yet'}
+          </h3>
+          <p style={{ color: '#9aa4b2' }}>
+            {searchQuery || filter === 'favorites' 
+              ? 'Try adjusting your search or filters' 
+              : 'Tap the + button to generate your first comeback!'}
           </p>
         </div>
       ) : (
