@@ -35,6 +35,7 @@ export function BottomNav({ activeTab, onTabChange, onGenerateClick }: BottomNav
               <motion.button
                 key={tab.id}
                 onClick={onGenerateClick}
+                aria-label="Generate new comeback"
                 className="relative -mt-8 w-14 h-14 rounded-full flex items-center justify-center shadow-lg"
                 style={{
                   background: 'linear-gradient(135deg, #7C5CFF, #00E5A8)'
