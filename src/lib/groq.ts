@@ -1,6 +1,6 @@
 import type { ToneType, Reply } from '../types';
 
-const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY || '';
+const GROQ_API_KEY = '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';
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 export async function moderateContent(text: string): Promise<boolean> {
