@@ -111,13 +111,26 @@ export async function getUserProfile(userId: string): Promise<UserProfile | null
   }
 
 }
-// Sign up with email and password
+
+
 export async function signUpWithEmail(email: string, password: string) {
+  // Get the correct redirect URL
+  const redirectTo = 
+    import.meta.env.VITE_APP_URL || 
+    (typeof window !== 'undefined' ? window.location.origin : '') ||
+    'https://replyme-ecru.vercel.app';
+  
+  console.log('🔗 Signup Redirect URL:', redirectTo);
+  
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      emailRedirectTo: `${window.location.origin}/auth/callback`,
+      emailRedirectTo: redirectTo,
+      // This ensures the email is sent
+      data: {
+        email_confirm: true
+      }
     }
   });
   
@@ -125,6 +138,12 @@ export async function signUpWithEmail(email: string, password: string) {
     console.error('Signup error:', error);
     throw error;
   }
+  
+  // Log success for debugging
+  console.log('✅ Signup successful:', {
+    user: data.user?.email,
+    needsConfirmation: !data.user?.email_confirmed_at
+  });
   
   return data;
 }
