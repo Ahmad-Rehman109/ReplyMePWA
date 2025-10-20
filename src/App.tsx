@@ -18,11 +18,51 @@ import { supabase, getCurrentUser, getUserProfile, signOut, type UserProfile } f
 import type { Generation, ToneType } from './types';
 
 export default function App() {
-  // ====== ADD THIS CHECK AT THE VERY BEGINNING ======
+  // ====== AUTH ROUTE HANDLING ======
   // Check if we're on the password reset page
   if (window.location.pathname === '/auth/reset-password') {
     return <PasswordResetPage />;
   }
+  
+  // Check if we're on the auth callback page (email confirmation)
+  if (window.location.pathname === '/auth/callback') {
+    // Handle the email confirmation
+    React.useEffect(() => {
+      const handleCallback = async () => {
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const accessToken = hashParams.get('access_token');
+        
+        if (accessToken) {
+          console.log('✅ Email confirmed! Redirecting...');
+          toast.success('Email confirmed successfully! 🎉');
+          // Redirect to home after a short delay
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 1500);
+        } else {
+          console.error('❌ No access token in callback');
+          toast.error('Email confirmation failed');
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 2000);
+        }
+      };
+      
+      handleCallback();
+    }, []);
+    
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#0b0f14' }}>
+        <div className="text-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center animate-pulse" style={{ background: 'linear-gradient(135deg, #7C5CFF, #00E5A8)' }}>
+            <span className="text-2xl">✨</span>
+          </div>
+          <p style={{ color: '#e6eef8' }}>Confirming your email...</p>
+        </div>
+      </div>
+    );
+  }
+  // ===================================================
   // ===================================================
 
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(() => {
