@@ -16,6 +16,7 @@ import { PrivacyModal } from './components/mobile/PrivacyModal';
 import { generateReplies, moderateContent } from './lib/groq';
 import { supabase, getCurrentUser, getUserProfile, signOut, type UserProfile } from './lib/supabase';
 import type { Generation, ToneType } from './types';
+import * as React from 'react';
 
 export default function App() {
   // ====== AUTH ROUTE HANDLING ======
