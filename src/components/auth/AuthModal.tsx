@@ -51,7 +51,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
     }
   };
 
-  const handleSignUp = async (e: React.FormEvent) => {
+const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!email || !email.includes('@')) {
@@ -67,13 +67,34 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
     setIsLoading(true);
     
     try {
-      await signUpWithEmail(email, password);
-      toast.success('Account created! Please check your email to verify.');
-      // Modal will stay open so user can see profile setup after verification
+      const { user, session } = await signUpWithEmail(email, password);
+      
+      // Check if email confirmation is required
+      if (user && !user.email_confirmed_at && !session) {
+        toast.success('Check your email! 📧', {
+          description: `We sent a confirmation link to ${email}`,
+          duration: 6000,
+        });
+        toast.info('💡 Don\'t see it? Check your spam folder!', {
+          duration: 5000,
+        });
+      } else if (session) {
+        // Auto-confirmed (rare case)
+        toast.success('Account created successfully!');
+      }
+      
+      // Keep modal open so user can see the message
+      resetForm();
     } catch (error: any) {
       console.error('Signup error:', error);
       if (error.message?.includes('already registered')) {
-        toast.error('This email is already registered');
+        toast.error('This email is already registered', {
+          description: 'Try signing in instead',
+        });
+      } else if (error.message?.includes('Email not confirmed')) {
+        toast.error('Please confirm your email first', {
+          description: 'Check your inbox for the confirmation link',
+        });
       } else {
         toast.error('Failed to create account. Please try again.');
       }
