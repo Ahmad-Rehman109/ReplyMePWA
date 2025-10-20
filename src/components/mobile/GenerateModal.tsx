@@ -5,7 +5,7 @@ import type { ToneType, GenerationMode } from '../../types';
 interface GenerateModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onGenerate: (input: string, tone: ToneType) => Promise<void>;
+  onGenerate: (input: string, tone: ToneType, mode?: GenerationMode) => Promise<void>;
   isLoading: boolean;
 }
 
