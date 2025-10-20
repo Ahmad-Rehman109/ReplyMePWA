@@ -15,6 +15,7 @@ import { PrivacyModal } from './components/mobile/PrivacyModal';
 import { generateReplies, moderateContent } from './lib/groq';
 import { supabase, getCurrentUser, getUserProfile, signOut, type UserProfile } from './lib/supabase';
 import type { Generation, ToneType } from './types';
+import type { Generation, ToneType, GenerationMode } from './types';
 
 export default function App() {
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(() => {
@@ -87,7 +88,7 @@ export default function App() {
     setHasCompletedOnboarding(true);
   };
 
-  const handleGenerate = async (input: string, tone: ToneType) => {
+  const handleGenerate = async (input: string, tone: ToneType, mode: GenerationMode = 'standard') => {
     // Check if user needs to sign in (after 1 free generation)
     if (!user && history.length >= 1) {
       setIsGenerateModalOpen(false);
@@ -107,7 +108,7 @@ export default function App() {
     setIsGenerateModalOpen(false);
 
     try {
-      const replies = await generateReplies(input, tone);
+      const replies = await generateReplies(input, tone, mode);
       
       const newGeneration: Generation = {
         id: Date.now().toString(),
