@@ -60,22 +60,28 @@ export default function App() {
     });
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session?.user) {
-        setUser(session.user);
-        const profile = await getUserProfile(session.user.id);
-        if (profile) {
-          setUserProfile(profile);
-          setIsAuthModalOpen(false);
-        } else {
-          setNeedsProfileSetup(true);
-        }
-      } else if (event === 'SIGNED_OUT') {
-        setUser(null);
-        setUserProfile(null);
-        setNeedsProfileSetup(false);
-      }
-    });
+    // Listen for auth changes
+const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'SIGNED_IN' && session?.user) {
+    setUser(session.user);
+    const profile = await getUserProfile(session.user.id);
+    if (profile) {
+      setUserProfile(profile);
+      setIsAuthModalOpen(false);
+    } else {
+      // New user - needs profile setup
+      setNeedsProfileSetup(true);
+      setIsAuthModalOpen(false);
+    }
+  } else if (event === 'SIGNED_OUT') {
+    setUser(null);
+    setUserProfile(null);
+    setNeedsProfileSetup(false);
+  } else if (event === 'PASSWORD_RECOVERY') {
+    // User clicked password reset link - could show a modal here if needed
+    console.log('Password recovery mode');
+  }
+});
 
     return () => {
       subscription.unsubscribe();
