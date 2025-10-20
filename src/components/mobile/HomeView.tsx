@@ -17,12 +17,7 @@ export function HomeView({
   onHistoryItemClick,
   isSignedIn
 }: HomeViewProps) {
-  const toneColors = {
-    funny: '#FFB84D',
-    bold: '#FF6B6B',
-    mature: '#7C5CFF',
-    mixed: '#00E5A8'
-  };
+  import { toneColors } from '../../constants/toneColors';
 
   return (
     <div className="pb-24 px-6 pt-6">
