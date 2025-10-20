@@ -18,10 +18,15 @@ export interface UserProfile {
 
 // Auth functions
 export async function signInWithMagicLink(email: string) {
-  // In production, use env variable. In dev, use current origin
-  const redirectTo = import.meta.env.VITE_APP_URL || window.location.origin;
+  // Multiple fallbacks
+  const redirectTo = 
+    import.meta.env.VITE_APP_URL || 
+    (typeof window !== 'undefined' ? window.location.origin : '') ||
+    'https://replyme-ecru.vercel.app';
   
-  console.log('Redirect URL:', redirectTo); // Debug log
+  console.log('🔗 Redirect URL:', redirectTo);
+  console.log('🌍 Environment:', import.meta.env.MODE);
+  console.log('📦 VITE_APP_URL:', import.meta.env.VITE_APP_URL);
   
   const { error } = await supabase.auth.signInWithOtp({
     email,
@@ -35,7 +40,6 @@ export async function signInWithMagicLink(email: string) {
     throw error;
   }
 }
-
 export async function signOut() {
   const { error } = await supabase.auth.signOut();
   if (error) {
