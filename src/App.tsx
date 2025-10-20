@@ -10,6 +10,7 @@ import { GenerateModal } from './components/mobile/GenerateModal';
 import { ResultSheet } from './components/mobile/ResultSheet';
 import { AuthModal } from './components/auth/AuthModal';
 import { ProfileSetupModal } from './components/auth/ProfileSetupModal';
+import { PasswordResetPage } from './components/auth/PasswordResetPage';
 import { NotificationsModal } from './components/mobile/NotificationsModal';
 import { PrivacyModal } from './components/mobile/PrivacyModal';
 import { generateReplies, moderateContent } from './lib/groq';
@@ -17,6 +18,13 @@ import { supabase, getCurrentUser, getUserProfile, signOut, type UserProfile } f
 import type { Generation, ToneType } from './types';
 
 export default function App() {
+  // ====== ADD THIS CHECK AT THE VERY BEGINNING ======
+  // Check if we're on the password reset page
+  if (window.location.pathname === '/auth/reset-password') {
+    return <PasswordResetPage />;
+  }
+  // ===================================================
+
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(() => {
     return localStorage.getItem('replyMeOnboarding') === 'completed';
   });
@@ -60,28 +68,27 @@ export default function App() {
     });
 
     // Listen for auth changes
-    // Listen for auth changes
-const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-  if (event === 'SIGNED_IN' && session?.user) {
-    setUser(session.user);
-    const profile = await getUserProfile(session.user.id);
-    if (profile) {
-      setUserProfile(profile);
-      setIsAuthModalOpen(false);
-    } else {
-      // New user - needs profile setup
-      setNeedsProfileSetup(true);
-      setIsAuthModalOpen(false);
-    }
-  } else if (event === 'SIGNED_OUT') {
-    setUser(null);
-    setUserProfile(null);
-    setNeedsProfileSetup(false);
-  } else if (event === 'PASSWORD_RECOVERY') {
-    // User clicked password reset link - could show a modal here if needed
-    console.log('Password recovery mode');
-  }
-});
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        setUser(session.user);
+        const profile = await getUserProfile(session.user.id);
+        if (profile) {
+          setUserProfile(profile);
+          setIsAuthModalOpen(false);
+        } else {
+          // New user - needs profile setup
+          setNeedsProfileSetup(true);
+          setIsAuthModalOpen(false);
+        }
+      } else if (event === 'SIGNED_OUT') {
+        setUser(null);
+        setUserProfile(null);
+        setNeedsProfileSetup(false);
+      } else if (event === 'PASSWORD_RECOVERY') {
+        // User clicked password reset link - could show a modal here if needed
+        console.log('Password recovery mode');
+      }
+    });
 
     return () => {
       subscription.unsubscribe();
