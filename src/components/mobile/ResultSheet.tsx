@@ -3,6 +3,7 @@ import { X, Copy, Heart, Share2, Check } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner@2.0.3';
 import type { Generation } from '../../types';
+import { toneColors } from '../../constants/toneColors';
 
 interface ResultSheetProps {
   isOpen: boolean;
@@ -16,12 +17,7 @@ export function ResultSheet({ isOpen, onClose, generation, onToggleFavorite }: R
 
   if (!generation) return null;
 
-  const toneColors = {
-    funny: '#FFB84D',
-    bold: '#FF6B6B',
-    mature: '#7C5CFF',
-    mixed: '#00E5A8'
-  };
+
 
   const toneEmojis = {
     funny: '😄',
