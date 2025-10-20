@@ -109,4 +109,61 @@ export async function getUserProfile(userId: string): Promise<UserProfile | null
     console.error('Get profile error:', error);
     return null;
   }
+
+}
+// Sign up with email and password
+export async function signUpWithEmail(email: string, password: string) {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: `${window.location.origin}/auth/callback`,
+    }
+  });
+  
+  if (error) {
+    console.error('Signup error:', error);
+    throw error;
+  }
+  
+  return data;
+}
+
+// Sign in with email and password
+export async function signInWithPassword(email: string, password: string) {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+  
+  if (error) {
+    console.error('Sign in error:', error);
+    throw error;
+  }
+  
+  return data;
+}
+
+// Send password reset email
+export async function sendPasswordResetEmail(email: string) {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/auth/reset-password`,
+  });
+  
+  if (error) {
+    console.error('Password reset error:', error);
+    throw error;
+  }
+}
+
+// Update password (after reset link)
+export async function updatePassword(newPassword: string) {
+  const { error } = await supabase.auth.updateUser({
+    password: newPassword,
+  });
+  
+  if (error) {
+    console.error('Update password error:', error);
+    throw error;
+  }
 }
