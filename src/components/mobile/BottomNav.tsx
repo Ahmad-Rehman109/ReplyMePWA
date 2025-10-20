@@ -52,8 +52,9 @@ export function BottomNav({ activeTab, onTabChange, onGenerateClick }: BottomNav
 
           return (
             <motion.button
-              key={tab.id}
-              onClick={() => onTabChange(tab.id)}
+            key={tab.id}
+            onClick={() => onTabChange(tab.id)}
+            aria-label={`Navigate to ${tab.label}`}
               className="flex flex-col items-center gap-1 py-2 px-4"
               whileTap={{ scale: 0.95 }}
             >
