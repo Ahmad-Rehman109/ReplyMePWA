@@ -39,7 +39,22 @@ export default function App() {
   const [needsProfileSetup, setNeedsProfileSetup] = useState(false);
   const [isNotificationsModalOpen, setIsNotificationsModalOpen] = useState(false);
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
 
+  // Offline detection
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+  
   // Save history to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('replyMeHistory', JSON.stringify(history));
@@ -89,6 +104,12 @@ export default function App() {
   };
 
   const handleGenerate = async (input: string, tone: ToneType, mode: GenerationMode = 'standard') => {
+
+    if (!isOnline) {
+      toast.error('You\'re offline. Connect to internet to generate replies.');
+      return;
+    }
+    
     // Check if user needs to sign in (after 1 free generation)
     if (!user && history.length >= 1) {
       setIsGenerateModalOpen(false);
