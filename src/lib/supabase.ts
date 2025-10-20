@@ -64,6 +64,14 @@ export async function getSession() {
   return session;
 }
 
+export async function signOut() {
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    console.error('Sign out error:', error);
+    throw error;
+  }
+}
+
 // Profile functions using KV store
 export async function saveUserProfile(userId: string, profile: Omit<UserProfile, 'id' | 'created_at' | 'updated_at'>) {
   const userProfile: UserProfile = {
